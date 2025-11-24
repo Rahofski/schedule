@@ -1,0 +1,1 @@
+export { TeachersInfoFrame } from './TeachersInfoFrame';
