@@ -83,14 +83,8 @@ export class CommonService {
   }
 
   static async proxyFetch<T>(endpoint: string, options: RequestInit): Promise<T> {
-    if (options.body && typeof options.body === 'string') {
-      try {
-        const parsedBody = JSON.parse(options.body);
-        options.body = JSON.stringify(humps.decamelizeKeys(parsedBody));
-      } catch {
-        // ignore JSON parse errors — body is not JSON
-      }
-    }
+    // Конвертация camelCase -> snake_case теперь происходит в /api/proxy
+    // Не нужно делать это здесь, чтобы избежать двойной конвертации
 
     // Используем Next.js API proxy для избежания mixed content (HTTP -> HTTPS)
     // /api/proxy/[...path] проксирует запросы на бэкенд с сервера
@@ -100,16 +94,16 @@ export class CommonService {
       credentials: 'include', // Автоматически отправляет httpOnly cookies с запросом
     };
 
+    // Прокси уже конвертирует snake_case -> camelCase
     const response = await this.fetch<{ data: T } | T>(url, requestOptions);
-    const camelizedResponse = humps.camelizeKeys(response) as { data: T } | T;
 
     // Если ответ обёрнут в { data: ... }, распаковываем
-    if (camelizedResponse && typeof camelizedResponse === 'object' && 'data' in camelizedResponse) {
-      return camelizedResponse.data;
+    if (response && typeof response === 'object' && 'data' in response) {
+      return (response as { data: T }).data;
     }
 
     // Иначе возвращаем как есть (для обратной совместимости)
-    return camelizedResponse as T;
+    return response as T;
   }
 
   static async backendFetch<T>(endpoint: string, options: RequestInit): Promise<T> {

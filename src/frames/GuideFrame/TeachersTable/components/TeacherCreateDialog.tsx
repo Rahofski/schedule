@@ -24,6 +24,9 @@ export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps)
   const createTeacher = useCreateTeacher();
 
   const onSubmit = (data: CreateTeacherDto) => {
+    // eslint-disable-next-line no-console
+    console.log('[TeacherCreateDialog] Form data:', data);
+
     createTeacher.mutate(data, {
       onSuccess: () => {
         reset();

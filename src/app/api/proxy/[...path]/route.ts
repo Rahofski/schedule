@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import humps from 'humps';
 
 const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
 
@@ -39,8 +40,19 @@ async function proxyRequest(request: NextRequest, path: string[], method: string
     let body: string | undefined;
     if (method !== 'GET' && method !== 'DELETE') {
       try {
-        body = await request.text();
-      } catch {
+        const rawBody = await request.text();
+        if (rawBody) {
+          // Конвертируем camelCase -> snake_case
+          const parsedBody = JSON.parse(rawBody);
+          const decamelizedBody = humps.decamelizeKeys(parsedBody);
+          body = JSON.stringify(decamelizedBody);
+
+          // eslint-disable-next-line no-console
+          console.log(`[Proxy] Request body (converted):`, body);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Proxy] Failed to parse body:', error);
         body = undefined;
       }
     }
@@ -78,8 +90,19 @@ async function proxyRequest(request: NextRequest, path: string[], method: string
       console.error(`[Proxy] Error:`, responseText);
     }
 
+    // Конвертируем snake_case -> camelCase в ответе
+    let finalResponse = responseText;
+    try {
+      const parsedResponse = JSON.parse(responseText);
+      const camelizedResponse = humps.camelizeKeys(parsedResponse);
+      finalResponse = JSON.stringify(camelizedResponse);
+    } catch {
+      // Если не JSON, возвращаем как есть
+      finalResponse = responseText;
+    }
+
     // Возвращаем ответ клиенту
-    return new NextResponse(responseText, {
+    return new NextResponse(finalResponse, {
       status: backendResponse.status,
       headers: {
         'Content-Type': backendResponse.headers.get('Content-Type') || 'application/json',
