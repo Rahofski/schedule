@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Отправляем запрос на бэкенд
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
     const loginUrl = `${backendUrl}/auth/login`;
 
     // eslint-disable-next-line no-console

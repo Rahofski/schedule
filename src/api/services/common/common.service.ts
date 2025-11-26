@@ -83,8 +83,6 @@ export class CommonService {
   }
 
   static async proxyFetch<T>(endpoint: string, options: RequestInit): Promise<T> {
-    // const { USE_API_MOCKS, mockProxyFetch } = await import('@/api/mocks');
-
     if (options.body && typeof options.body === 'string') {
       try {
         const parsedBody = JSON.parse(options.body);
@@ -94,10 +92,9 @@ export class CommonService {
       }
     }
 
-    // Получаем access токен из cookies (на клиенте) или из запроса (на сервере)
-    // ВАЖНО: На клиенте токен в httpOnly cookie недоступен через document.cookie
-    // Поэтому используем credentials: 'include' для автоматической отправки cookies
-    const url = `${this.BACKEND_URL}${endpoint}`;
+    // Используем Next.js API proxy для избежания mixed content (HTTP -> HTTPS)
+    // /api/proxy/[...path] проксирует запросы на бэкенд с сервера
+    const url = `/api/proxy${endpoint}`;
     const requestOptions: RequestInit = {
       ...options,
       credentials: 'include', // Автоматически отправляет httpOnly cookies с запросом
