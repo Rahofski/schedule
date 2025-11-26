@@ -32,10 +32,21 @@ export const useGetTeachersQuery = () => {
   });
 };
 
-export const useGetLightTeachersQuery = () =>
-  useQuery({
+export const useGetLightTeachersQuery = () => {
+  // eslint-disable-next-line no-console
+  console.log('[useGetLightTeachersQuery] Hook called');
+
+  return useQuery({
     queryKey: [TeachersService.CACHE_TAGS.LightTeachers],
-    queryFn: TeachersService.getTeachers,
+    queryFn: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useGetLightTeachersQuery] Fetching light teachers...');
+      const result = await TeachersService.getLightTeachers();
+      // eslint-disable-next-line no-console
+      console.log('[useGetLightTeachersQuery] Fetched light teachers:', result);
+      return result;
+    },
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
   });
+};

@@ -13,7 +13,7 @@ import { TeacherDeletionDialog } from './components/TeacherDeletionDialog';
 import { TeacherTableRow } from './components/TeacherTableRow';
 
 export function TeachersTableFrame() {
-  const { data: apiData } = useGetLightTeachersQuery();
+  const { data: apiData, isLoading } = useGetLightTeachersQuery();
   const deleteTeacher = useDeleteTeacher();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -21,8 +21,9 @@ export function TeachersTableFrame() {
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  const displayedTeachers = showAll ? apiData : apiData?.slice(0, 5);
-  const hasMoreTeachers = (apiData?.length || 0) > 5;
+  const data = apiData || [];
+  const displayedTeachers = showAll ? data : data.slice(0, 5);
+  const hasMoreTeachers = data.length > 5;
 
   const handleDeleteConfirm = () => {
     if (teacherToDelete) {
@@ -48,12 +49,11 @@ export function TeachersTableFrame() {
   };
 
   const handleSelectAll = () => {
-    const currentDisplayed = displayedTeachers || [];
-    const displayedIds = currentDisplayed.map(t => t.id);
+    const displayedIds = displayedTeachers.map(t => t.id);
 
     if (
-      selectedTeachers.length === currentDisplayed.length &&
-      currentDisplayed.every(t => selectedTeachers.includes(t.id))
+      selectedTeachers.length === displayedTeachers.length &&
+      displayedTeachers.every(t => selectedTeachers.includes(t.id))
     ) {
       // Если выбраны все показанные, снимаем выбор
       setSelectedTeachers([]);
@@ -124,13 +124,11 @@ export function TeachersTableFrame() {
                   <TableHead>
                     <Checkbox
                       checked={
-                        displayedTeachers &&
-                        displayedTeachers.length > 0 &&
-                        displayedTeachers.every(t => selectedTeachers.includes(t.id))
+                        displayedTeachers.length > 0 && displayedTeachers.every(t => selectedTeachers.includes(t.id))
                       }
                       onCheckedChange={handleSelectAll}
+                      disabled={displayedTeachers.length === 0}
                       className={
-                        displayedTeachers &&
                         displayedTeachers.length > 0 &&
                         displayedTeachers.every(t => selectedTeachers.includes(t.id)) &&
                         !showAll
@@ -144,19 +142,48 @@ export function TeachersTableFrame() {
               </TableHeader>
 
               <TableBody>
-                {displayedTeachers?.map((teacher, index) => (
-                  <TeacherTableRow
-                    key={teacher.id}
-                    teacher={teacher}
-                    isSelected={selectedTeachers.includes(teacher.id)}
-                    onToggleSelect={() => handleToggleSelect(teacher.id)}
-                    onDelete={() => {
-                      setTeacherToDelete(teacher.id);
-                      setIsDeleteDialogOpen(true);
-                    }}
-                    isEven={index % 2 === 0}
-                  />
-                ))}
+                {isLoading ? (
+                  <TableRow>
+                    <td
+                      colSpan={2}
+                      className='py-8 text-center text-muted-foreground'
+                    >
+                      Загрузка...
+                    </td>
+                  </TableRow>
+                ) : displayedTeachers.length === 0 ? (
+                  <TableRow>
+                    <td
+                      colSpan={2}
+                      className='py-8 text-center'
+                    >
+                      <div className='flex flex-col items-center gap-2'>
+                        <p className='text-muted-foreground'>Нет учителей в справочнике</p>
+                        <Button
+                          onClick={() => setIsCreateDialogOpen(true)}
+                          variant='outline'
+                          size='sm'
+                        >
+                          Добавить первого учителя
+                        </Button>
+                      </div>
+                    </td>
+                  </TableRow>
+                ) : (
+                  displayedTeachers.map((teacher, index) => (
+                    <TeacherTableRow
+                      key={teacher.id}
+                      teacher={teacher}
+                      isSelected={selectedTeachers.includes(teacher.id)}
+                      onToggleSelect={() => handleToggleSelect(teacher.id)}
+                      onDelete={() => {
+                        setTeacherToDelete(teacher.id);
+                        setIsDeleteDialogOpen(true);
+                      }}
+                      isEven={index % 2 === 0}
+                    />
+                  ))
+                )}
               </TableBody>
             </Table>
             {hasMoreTeachers && !showAll && (
@@ -165,7 +192,7 @@ export function TeachersTableFrame() {
                   onClick={() => setShowAll(true)}
                   variant='outline'
                 >
-                  Показать всех ({apiData?.length})
+                  Показать всех ({data.length})
                 </Button>
               </div>
             )}

@@ -14,6 +14,7 @@ export const useCreateTeacher = () => {
     }) => TeachersService.createTeacher(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
     },
   });
 };
@@ -31,7 +32,9 @@ export const useDeleteTeacher = () => {
       // eslint-disable-next-line no-console
       console.log('[useDeleteTeacher] Success, refetching...');
       await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
       await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
     },
   });
 };

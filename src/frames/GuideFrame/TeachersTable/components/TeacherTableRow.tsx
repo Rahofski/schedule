@@ -1,6 +1,6 @@
 'use client';
 
-import { BaseTeacher, formatFullName } from '@/lib';
+import { AppLightTeacher, formatFullName } from '@/lib';
 import { Button } from '@/components/ui/shadcn/button';
 import { TableCell, TableRow } from '@/components/ui/shadcn/table';
 import { MoreHorizontal, TrashIcon } from 'lucide-react';
@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/shadcn/dropdown-menu';
 
 export interface TeacherTableRowProps {
-  teacher: BaseTeacher;
+  teacher: AppLightTeacher;
   isSelected: boolean;
   onToggleSelect: () => void;
   onDelete: () => void;
