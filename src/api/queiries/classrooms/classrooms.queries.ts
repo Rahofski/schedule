@@ -2,11 +2,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClassRoomsService } from '@/api';
 
 // Получить список кабинетов
-export const useGetClassRoomsQuery = () =>
-  useQuery({
+export const useGetClassRoomsQuery = () => {
+  // eslint-disable-next-line no-console
+  console.log('[useGetClassRoomsQuery] Hook called');
+
+  return useQuery({
     queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms],
-    queryFn: ClassRoomsService.getClassRooms,
+    queryFn: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useGetClassRoomsQuery] Fetching classrooms...');
+      const result = await ClassRoomsService.getClassRooms();
+      // eslint-disable-next-line no-console
+      console.log('[useGetClassRoomsQuery] Fetched classrooms:', result);
+      return result;
+    },
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
+};
 
 // Создать кабинет
 export const useCreateClassRoom = () => {
@@ -23,9 +36,16 @@ export const useCreateClassRoom = () => {
 export const useDeleteClassRoom = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => ClassRoomsService.deleteClassRoom(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
+    mutationFn: async (id: string) => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteClassRoom] Deleting classroom:', id);
+      await ClassRoomsService.deleteClassRoom(id);
+    },
+    onSuccess: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteClassRoom] Success, refetching...');
+      await queryClient.invalidateQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
+      await queryClient.refetchQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
     },
   });
 };

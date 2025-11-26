@@ -36,9 +36,16 @@ export const useCreateSubject = () => {
 export const useDeleteSubject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => SubjectsService.deleteSubject(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
+    mutationFn: async (id: string) => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteSubject] Deleting subject:', id);
+      await SubjectsService.deleteSubject(id);
+    },
+    onSuccess: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteSubject] Success, refetching...');
+      await queryClient.invalidateQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
+      await queryClient.refetchQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
     },
   });
 };

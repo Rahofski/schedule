@@ -3,11 +3,24 @@ import { ClassesService } from '@/api';
 import { AppClass } from '@/lib/types/classes';
 
 // Получить список классов
-export const useGetClassesQuery = () =>
-  useQuery({
+export const useGetClassesQuery = () => {
+  // eslint-disable-next-line no-console
+  console.log('[useGetClassesQuery] Hook called');
+
+  return useQuery({
     queryKey: [ClassesService.CACHE_TAGS.Classes],
-    queryFn: ClassesService.getClasses,
+    queryFn: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useGetClassesQuery] Fetching classes...');
+      const result = await ClassesService.getClasses();
+      // eslint-disable-next-line no-console
+      console.log('[useGetClassesQuery] Fetched classes:', result);
+      return result;
+    },
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
+};
 
 // Создать класс
 export const useCreateClass = () => {
@@ -24,9 +37,16 @@ export const useCreateClass = () => {
 export const useDeleteClass = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => ClassesService.deleteClass(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+    mutationFn: async (id: string) => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteClass] Deleting class:', id);
+      await ClassesService.deleteClass(id);
+    },
+    onSuccess: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteClass] Success, refetching...');
+      await queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+      await queryClient.refetchQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
     },
   });
 };

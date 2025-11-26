@@ -22,9 +22,16 @@ export const useCreateTeacher = () => {
 export const useDeleteTeacher = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => TeachersService.deleteTeacher(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+    mutationFn: async (id: string) => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteTeacher] Deleting teacher:', id);
+      await TeachersService.deleteTeacher(id);
+    },
+    onSuccess: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useDeleteTeacher] Success, refetching...');
+      await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
     },
   });
 };
