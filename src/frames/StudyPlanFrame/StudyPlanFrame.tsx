@@ -34,13 +34,13 @@ export function StudyPlanFrame() {
 
     const updatedClass: AppClass = {
       ...classItem,
-      subjects: classItem.subjects.map(s =>
+      subjects: (classItem.subjects || []).map(s =>
         s.subject.id === subjectId ? { ...s, hoursPerWeek: hoursPerWeek || 0 } : s
       ),
     };
 
     // Если предмета нет в списке, добавляем его
-    if (!classItem.subjects.some(s => s.subject.id === subjectId)) {
+    if (!(classItem.subjects || []).some(s => s.subject.id === subjectId)) {
       const subject = subjects.find(s => s.id === subjectId);
       if (subject && hoursPerWeek !== null) {
         updatedClass.subjects.push({
@@ -62,7 +62,7 @@ export function StudyPlanFrame() {
 
     const updatedClass: AppClass = {
       ...classItem,
-      subjects: classItem.subjects.map(s => {
+      subjects: (classItem.subjects || []).map(s => {
         if (s.subject.id === subjectId) {
           if (split) {
             return {

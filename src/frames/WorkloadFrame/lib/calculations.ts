@@ -10,7 +10,7 @@ export function makeKey(subjectId: string, classId: string) {
 
 export function hasSubjectInClass(subjectId: string, classId: string, classes: AppClass[]) {
   const cls = classes.find(c => c.id === classId);
-  if (!cls) {
+  if (!cls || !cls.subjects) {
     return false;
   }
 
@@ -30,7 +30,7 @@ export function getAvailableHours(
   currentTeacherId: string
 ) {
   const cls = classes.find(c => c.id === classId);
-  if (!cls) {
+  if (!cls || !cls.subjects) {
     return 0;
   }
 
