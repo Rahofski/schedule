@@ -2,11 +2,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SubjectsService } from '@/api';
 
 // Получить список предметов
-export const useGetSubjectsQuery = () =>
-  useQuery({
+export const useGetSubjectsQuery = () => {
+  // eslint-disable-next-line no-console
+  console.log('[useGetSubjectsQuery] Hook called');
+
+  return useQuery({
     queryKey: [SubjectsService.CACHE_TAGS.Subjects],
-    queryFn: SubjectsService.getSubjects,
+    queryFn: async () => {
+      // eslint-disable-next-line no-console
+      console.log('[useGetSubjectsQuery] Fetching subjects...');
+      const result = await SubjectsService.getSubjects();
+      // eslint-disable-next-line no-console
+      console.log('[useGetSubjectsQuery] Fetched subjects:', result);
+      return result;
+    },
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
+};
 
 // Создать предмет
 export const useCreateSubject = () => {
