@@ -55,7 +55,7 @@ export function ScheduleTableRow({
 
   // Получить информацию о предметах с учетом использованных часов
   const getSubjectInfo = (classItem: AppClass) => {
-    return classItem.subjects.map(subjectInfo => {
+    return (classItem.subjects || []).map(subjectInfo => {
       const hasSplit = Boolean(subjectInfo.split);
       const usedHours = getUsedHoursForSubject(
         classItem.id,
