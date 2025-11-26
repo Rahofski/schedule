@@ -75,7 +75,7 @@ export function AddLessonDialog({
   const availableClasses = canAddOtherClasses
     ? allClasses.filter(c => {
         // Класс должен иметь этот же предмет с разделением и crossClassAllowed
-        const hasSubject = c.subjects.some(s => s.subject.id === subject.id && s.split?.crossClassAllowed);
+        const hasSubject = (c.subjects || []).some(s => s.subject.id === subject.id && s.split?.crossClassAllowed);
         return c.id !== classItem.id && hasSubject && c.groups && c.groups.length > 0;
       })
     : [];
@@ -83,7 +83,7 @@ export function AddLessonDialog({
   // Фильтруем учителей по нагрузке
   const availableTeachers = allTeachers.filter(teacher => {
     // Проверяем, есть ли у учителя нагрузка по этому предмету для данного класса
-    return teacher.classHours.some(ch => ch.class.id === classItem.id && ch.subject.id === subject.id);
+    return (teacher.classHours || []).some(ch => ch.class.id === classItem.id && ch.subject.id === subject.id);
   });
 
   // Инициализация при открытии диалога
