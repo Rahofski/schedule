@@ -1,33 +1,42 @@
 'use client';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/shadcn/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/shadcn/dialog';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
 import { useForm } from 'react-hook-form';
 import { useCreateTeacher } from '@/api';
+import { CreateTeacherDto } from '@/lib/dtos/teachers';
 
 interface TeacherCreateDialogProps {
   open: boolean;
   onClose: () => void;
 }
 
-type CreateTeacherDto = {
-  firstName: string;
-  lastName: string;
-  patronymic?: string;
-  email?: string;
-  phone?: string;
-};
-
 export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps) {
-  const { register, handleSubmit, reset } = useForm<CreateTeacherDto>();
+  const { register, handleSubmit, reset } = useForm<CreateTeacherDto>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      patronymic: null,
+    },
+  });
   const createTeacher = useCreateTeacher();
 
   const onSubmit = (data: CreateTeacherDto) => {
-    // eslint-disable-next-line no-console
-    console.log('[TeacherCreateDialog] Form data:', data);
+    const payload: CreateTeacherDto = {
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      patronymic: data.patronymic?.trim() ? data.patronymic.trim() : null,
+    };
 
-    createTeacher.mutate(data, {
+    createTeacher.mutate(payload, {
       onSuccess: () => {
         reset();
         onClose();
@@ -43,6 +52,7 @@ export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps)
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Добавить преподавателя</DialogTitle>
+          <DialogDescription className='sr-only'>Форма создания преподавателя</DialogDescription>
         </DialogHeader>
 
         <form
@@ -60,16 +70,6 @@ export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps)
           <Input
             placeholder='Отчество (опционально)'
             {...register('patronymic')}
-          />
-          <Input
-            placeholder='Email (опционально)'
-            type='email'
-            {...register('email')}
-          />
-          <Input
-            placeholder='Телефон (опционально)'
-            type='tel'
-            {...register('phone')}
           />
 
           <DialogFooter>
