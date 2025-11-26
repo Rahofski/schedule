@@ -51,7 +51,14 @@ export class CommonService {
   }
 
   static async fetch<T>(url: string, options: RequestInit): Promise<T> {
+    // eslint-disable-next-line no-console
+    console.log(`[API Request] ${options.method || 'GET'} ${url}`);
+
     const res = await fetch(url, options);
+
+    // eslint-disable-next-line no-console
+    console.log(`[API Response] ${options.method || 'GET'} ${url} - Status: ${res.status}`);
+
     if (!res.ok) {
       // Логируем ошибку в консоль
       // eslint-disable-next-line no-console
@@ -86,17 +93,6 @@ export class CommonService {
         // ignore JSON parse errors — body is not JSON
       }
     }
-
-    // if (USE_API_MOCKS) {
-    //   const normalizedOptions: RequestInit = { ...options, signal: options.signal ?? undefined };
-    //   const mocked = await mockProxyFetch<T>(endpoint, normalizedOptions);
-    //   if (mocked !== undefined) {
-    //     await new Promise(resolve => {
-    //       setTimeout(resolve, 300);
-    //     });
-    //     return mocked;
-    //   }
-    // }
 
     // Получаем access токен из cookies (на клиенте) или из запроса (на сервере)
     // ВАЖНО: На клиенте токен в httpOnly cookie недоступен через document.cookie

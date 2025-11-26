@@ -20,6 +20,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
     try {
       if (email && password) {
+        // eslint-disable-next-line no-console
+        console.log('[LoginForm] Submitting login...');
+
         // Отправляем запрос на наш API endpoint
         const response = await fetch('/api/auth/login', {
           method: 'POST',
@@ -30,7 +33,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           credentials: 'include', // Важно для работы с cookies
         });
 
+        // eslint-disable-next-line no-console
+        console.log('[LoginForm] Response status:', response.status);
+
         const _data = await response.json();
+
+        // eslint-disable-next-line no-console
+        console.log('[LoginForm] Response data:', _data);
 
         if (response.ok) {
           // Токены автоматически сохранены в httpOnly cookies
@@ -39,11 +48,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           window.location.href = '/panel/schedule';
         } else {
           // Обработка ошибки авторизации
-          toast.error('Неверный email или пароль');
+          // eslint-disable-next-line no-console
+          console.error('[LoginForm] Login failed:', _data);
+          toast.error(_data.error || 'Неверный email или пароль');
         }
       }
-    } catch {
+    } catch (error) {
       // Обработка сетевых ошибок
+      // eslint-disable-next-line no-console
+      console.error('[LoginForm] Error:', error);
       toast.error('Ошибка подключения к серверу');
     } finally {
       setIsLoading(false);

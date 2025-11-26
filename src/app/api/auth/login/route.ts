@@ -70,16 +70,33 @@ export async function POST(request: NextRequest) {
     }
 
     // Отправляем запрос на бэкенд
-    const backendResponse = await fetch('http://api/auth/login', {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+    const loginUrl = `${backendUrl}/auth/login`;
+
+    // eslint-disable-next-line no-console
+    console.log('[Login] Sending request to backend:', loginUrl);
+
+    const backendResponse = await fetch(loginUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
+    // eslint-disable-next-line no-console
+    console.log('[Login] Backend response status:', backendResponse.status);
+
     if (!backendResponse.ok) {
       // Проксируем ошибку от бэкенда
-      const errorData = await backendResponse.json();
-      return NextResponse.json(errorData, { status: backendResponse.status });
+      const errorText = await backendResponse.text();
+      // eslint-disable-next-line no-console
+      console.error('[Login] Backend error:', errorText);
+
+      try {
+        const errorData = JSON.parse(errorText);
+        return NextResponse.json(errorData, { status: backendResponse.status });
+      } catch {
+        return NextResponse.json({ error: errorText || 'Authentication failed' }, { status: backendResponse.status });
+      }
     }
 
     // Получаем токены от бэкенда
@@ -112,7 +129,12 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Login] Error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
