@@ -53,6 +53,17 @@ export class CommonService {
   static async fetch<T>(url: string, options: RequestInit): Promise<T> {
     const res = await fetch(url, options);
     if (!res.ok) {
+      // Логируем ошибку в консоль
+      // eslint-disable-next-line no-console
+      console.error(`[API Error] ${options.method || 'GET'} ${url} - Status: ${res.status}`);
+      try {
+        const errorBody = await res.text();
+        // eslint-disable-next-line no-console
+        console.error('[API Error Body]:', errorBody);
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error('[API Error Body]: Unable to read response body');
+      }
       throw res;
     }
 

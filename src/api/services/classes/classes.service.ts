@@ -1,4 +1,3 @@
-import { mockClasses } from '@/lib/mocks';
 import { AppClass } from '@/lib/types/classes';
 import { CommonService } from '../common/common.service';
 
@@ -11,11 +10,11 @@ export class ClassesService extends CommonService {
   // Получить все классы
   static async getClasses<const T extends AppClass[]>(): Promise<T> {
     // Временно возвращаем моки
-    return Promise.resolve(mockClasses as T);
+    // return Promise.resolve(mockClasses as T);
 
-    // return this.proxyFetch<T>(`/classes`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<T>(`/classes`, {
+      method: 'GET',
+    });
   }
 
   // Получить один класс по id
@@ -44,12 +43,12 @@ export class ClassesService extends CommonService {
   // Массовое обновление классов
   static async bulkUpdateClasses(_classes: AppClass[]): Promise<void> {
     // Временно имитируем успешное сохранение
-    return Promise.resolve();
+    // return Promise.resolve();
 
-    // return this.proxyFetch<void>(`/classes/bulk`, {
-    //   method: 'PUT',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ data: _classes }),
-    // });
+    return this.proxyFetch<void>(`/classes/bulk`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: _classes }),
+    });
   }
 }

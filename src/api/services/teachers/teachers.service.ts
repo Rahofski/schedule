@@ -3,7 +3,6 @@
 import { CreateTeacherDto } from '@/lib/dtos/teachers';
 import { AppLightTeacher, BaseTeacher } from '@/lib/types/teachers';
 import { CommonService } from '../common/common.service';
-import { mockTeachers, mockLightTeachers } from '@/lib/mocks';
 
 export class TeachersService extends CommonService {
   static CACHE_TAGS = {
@@ -15,20 +14,20 @@ export class TeachersService extends CommonService {
   // Получить всех
   static async getTeachers<const T extends BaseTeacher[]>(): Promise<T> {
     // Временно возвращаем моки
-    return Promise.resolve(mockTeachers as T);
+    // return Promise.resolve(mockTeachers as T);
 
-    // return this.proxyFetch<T>(`/users/Teachers`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<T>(`/users/Teachers`, {
+      method: 'GET',
+    });
   }
 
   static async getLightTeachers<const T extends AppLightTeacher[]>(): Promise<T> {
     // Временно возвращаем моки
-    return Promise.resolve(mockLightTeachers as T);
+    // return Promise.resolve(mockLightTeachers as T);
 
-    // return this.proxyFetch<T>(`/users/LightTeachers`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<T>(`/users/LightTeachers`, {
+      method: 'GET',
+    });
   }
 
   // Получить одного по id
@@ -56,12 +55,12 @@ export class TeachersService extends CommonService {
   static async bulkUpdateTeachers(_dto: BaseTeacher[]): Promise<void> {
     // Временно имитируем успешное сохранение
     // В реальном приложении здесь будет вызов API
-    return Promise.resolve();
+    // return Promise.resolve();
 
-    // return this.proxyFetch<void>(`/users/Teachers/bulk`, {
-    //   method: 'PATCH',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ data: _dto }),
-    // });
+    return this.proxyFetch<void>(`/users/Teachers/bulk`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: _dto }),
+    });
   }
 }

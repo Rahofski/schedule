@@ -1,6 +1,5 @@
 import { AppSubject } from '@/lib/types/subjects';
 import { CommonService } from '../common/common.service';
-import { mockSubjects } from '@/lib/mocks';
 
 export class SubjectsService extends CommonService {
   static CACHE_TAGS = {
@@ -11,11 +10,11 @@ export class SubjectsService extends CommonService {
   // Получить все предметы
   static async getSubjects<const T extends AppSubject[]>(): Promise<T> {
     // Временно возвращаем моки
-    return Promise.resolve(mockSubjects as T);
+    // return Promise.resolve(mockSubjects as T);
 
-    // return this.proxyFetch<T>(`/subjects`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<T>(`/subjects`, {
+      method: 'GET',
+    });
   }
 
   // Получить один предмет по id

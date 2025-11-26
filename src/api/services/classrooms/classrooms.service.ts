@@ -1,6 +1,5 @@
 import { AppClassRoom } from '@/lib/types/classrooms';
 import { CommonService } from '../common/common.service';
-import { mockClassrooms } from '@/lib/mocks';
 
 export class ClassRoomsService extends CommonService {
   static CACHE_TAGS = {
@@ -11,11 +10,11 @@ export class ClassRoomsService extends CommonService {
   // Получить все кабинеты
   static async getClassRooms<const T extends AppClassRoom[]>(): Promise<T> {
     // Временно возвращаем моки
-    return Promise.resolve(mockClassrooms as T);
+    // return Promise.resolve(mockClassrooms as T);
 
-    // return this.proxyFetch<T>(`/classrooms`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<T>(`/classrooms`, {
+      method: 'GET',
+    });
   }
 
   // Получить один кабинет по id

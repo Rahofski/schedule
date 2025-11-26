@@ -1,4 +1,3 @@
-import { mockSchedule } from '@/lib/mocks';
 import { AppSchedule, ScheduleSlot } from '@/lib/types/schedule';
 import { CommonService } from '../common/common.service';
 
@@ -11,11 +10,11 @@ export class ScheduleService extends CommonService {
   // Получить расписание
   static async getSchedule(): Promise<ScheduleSlot[]> {
     // Временно возвращаем моки
-    return Promise.resolve(mockSchedule);
+    // return Promise.resolve(mockSchedule);
 
-    // return this.proxyFetch<ScheduleSlot[]>(`/schedule`, {
-    //   method: 'GET',
-    // });
+    return this.proxyFetch<ScheduleSlot[]>(`/schedule`, {
+      method: 'GET',
+    });
   }
 
   // Получить расписание по ID
@@ -28,13 +27,13 @@ export class ScheduleService extends CommonService {
   // Сохранить/обновить расписание
   static async saveSchedule(_slots: ScheduleSlot[]): Promise<void> {
     // Временно имитируем успешное сохранение
-    return Promise.resolve();
+    // return Promise.resolve();
 
-    // return this.proxyFetch<void>(`/schedule`, {
-    //   method: 'PUT',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ data: _slots }),
-    // });
+    return this.proxyFetch<void>(`/schedule`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: _slots }),
+    });
   }
 
   // Создать новое расписание
