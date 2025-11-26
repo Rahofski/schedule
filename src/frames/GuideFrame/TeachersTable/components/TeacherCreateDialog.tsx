@@ -14,9 +14,9 @@ interface TeacherCreateDialogProps {
 type CreateTeacherDto = {
   firstName: string;
   lastName: string;
-  patronymic: string | null;
-  email: string;
-  phone: string;
+  patronymic?: string;
+  email?: string;
+  phone?: string;
 };
 
 export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps) {
@@ -60,6 +60,16 @@ export function TeacherCreateDialog({ open, onClose }: TeacherCreateDialogProps)
           <Input
             placeholder='Отчество (опционально)'
             {...register('patronymic')}
+          />
+          <Input
+            placeholder='Email (опционально)'
+            type='email'
+            {...register('email')}
+          />
+          <Input
+            placeholder='Телефон (опционально)'
+            type='tel'
+            {...register('phone')}
           />
 
           <DialogFooter>

@@ -82,6 +82,13 @@ async function proxyRequest(request: NextRequest, path: string[], method: string
     // eslint-disable-next-line no-console
     console.log(`[Proxy] ${method} ${endpoint} - Status: ${backendResponse.status}`);
 
+    // Для 204 No Content возвращаем пустой ответ без тела
+    if (backendResponse.status === 204) {
+      return new NextResponse(null, {
+        status: 204,
+      });
+    }
+
     // Получаем тело ответа
     const responseText = await backendResponse.text();
 
@@ -92,13 +99,15 @@ async function proxyRequest(request: NextRequest, path: string[], method: string
 
     // Конвертируем snake_case -> camelCase в ответе
     let finalResponse = responseText;
-    try {
-      const parsedResponse = JSON.parse(responseText);
-      const camelizedResponse = humps.camelizeKeys(parsedResponse);
-      finalResponse = JSON.stringify(camelizedResponse);
-    } catch {
-      // Если не JSON, возвращаем как есть
-      finalResponse = responseText;
+    if (responseText) {
+      try {
+        const parsedResponse = JSON.parse(responseText);
+        const camelizedResponse = humps.camelizeKeys(parsedResponse);
+        finalResponse = JSON.stringify(camelizedResponse);
+      } catch {
+        // Если не JSON, возвращаем как есть
+        finalResponse = responseText;
+      }
     }
 
     // Возвращаем ответ клиенту

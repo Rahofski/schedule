@@ -74,6 +74,11 @@ export class CommonService {
       throw res;
     }
 
+    // Для 204 No Content возвращаем undefined
+    if (res.status === 204) {
+      return undefined as T;
+    }
+
     const contentType = res.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       return await res.json();
