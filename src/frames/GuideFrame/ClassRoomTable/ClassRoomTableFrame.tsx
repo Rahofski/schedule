@@ -20,14 +20,7 @@ export function ClassRoomTableFrame() {
   const [selectedClassRooms, setSelectedClassRooms] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  // Моки — используются если с API ничего не пришло
-  const mockData = [
-    { id: '1', name: '101' },
-    { id: '2', name: '202' },
-    { id: '3', name: '303' },
-  ];
-
-  const data = apiData && apiData.length > 0 ? apiData : mockData;
+  const data = apiData && apiData.length > 0 ? apiData : [];
   const displayedClassRooms = showAll ? data : data.slice(0, 5);
   const hasMoreClassRooms = data.length > 5;
 
