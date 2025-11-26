@@ -25,7 +25,7 @@ export function StudyPlanTableRow({ subject, classes, onChange, onSplitChange, i
     const initialValues: Record<string, string> = {};
     const initialSplits: Record<string, { split: boolean; crossClass: boolean }> = {};
     classes.forEach(classItem => {
-      const subjectConfig = classItem.subjects.find(s => s.subject.id === subject.id);
+      const subjectConfig = classItem.subjects?.find(s => s.subject.id === subject.id);
       initialValues[classItem.id] = subjectConfig ? String(subjectConfig.hoursPerWeek) : '';
       initialSplits[classItem.id] = {
         split: Boolean(subjectConfig?.split),
