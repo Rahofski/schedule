@@ -56,9 +56,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       {...props}
     >
       <Card>
-        <CardHeader>
-          <CardTitle>Вход в аккаунт</CardTitle>
-          <CardDescription>Введите вашу почту ниже, чтобы войти в аккаунт</CardDescription>
+        <CardHeader className='text-center'>
+          <CardTitle className='text-2xl'>Добро пожаловать</CardTitle>
+          <CardDescription>Войдите в систему управления школьным расписанием</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Input
                   id='email'
                   type='email'
-                  placeholder='m@example.com'
+                  placeholder='teacher@school.com'
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -92,11 +92,17 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   className='w-full'
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Logging in...' : 'Login'}
+                  {isLoading ? 'Вход...' : 'Войти'}
                 </Button>
               </div>
             </div>
           </form>
+          <div className='mt-4 rounded-lg border bg-muted/50 p-3 text-center text-xs text-muted-foreground'>
+            <p className='font-medium'>Демо-доступ:</p>
+            <p className='mt-1'>
+              <span className='font-mono'>mock@gmail.com</span> / <span className='font-mono'>mock123</span>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

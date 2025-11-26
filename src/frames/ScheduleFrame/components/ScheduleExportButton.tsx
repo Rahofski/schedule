@@ -158,7 +158,6 @@ export function ScheduleExportButton({ tableRef }: ScheduleExportButtonProps) {
       const dateStr = today.toLocaleDateString('ru-RU').replace(/\./g, '-');
       pdf.save(`расписание_${dateStr}.pdf`);
     } catch (error) {
-      // Логгируем ошибку и показываем уведомление пользователю
       // eslint-disable-next-line no-console
       console.error('Ошибка при создании PDF:', error);
       // eslint-disable-next-line no-alert

@@ -6,6 +6,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -18,6 +19,7 @@ import { SIDEBAR_SECTION_ICONS } from '@/components/icons/sidebar-section-icons'
 import { SIDEBAR_SECTION_CODES, SIDEBAR_SECTION_TITLES } from '@/lib/data';
 import { SIDEBAR_SECTION_URLS } from '@/lib/data/titles/sidebar-section-urls';
 import { usePathname } from 'next/navigation';
+import { AppBrand } from '@/components/ui/AppBrand';
 
 export default function MainSidebar() {
   const pathname = usePathname();
@@ -42,9 +44,17 @@ export default function MainSidebar() {
 
   return (
     <Sidebar>
+      <SidebarHeader>
+        <div className='px-2 py-4'>
+          <AppBrand
+            size='sm'
+            showLink
+          />
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{process.env.NEXT_PUBLIC_SERVICE_TITLE}</SidebarGroupLabel>
+          <SidebarGroupLabel>Навигация</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {sections.map(({ code, title, url, icon }) => (
