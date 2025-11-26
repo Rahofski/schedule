@@ -26,8 +26,9 @@ export const useCreateSubject = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: { name: string }) => SubjectsService.createSubject(dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
+      await queryClient.refetchQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
     },
   });
 };
@@ -36,14 +37,8 @@ export const useCreateSubject = () => {
 export const useDeleteSubject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteSubject] Deleting subject:', id);
-      await SubjectsService.deleteSubject(id);
-    },
+    mutationFn: (id: string) => SubjectsService.deleteSubject(id),
     onSuccess: async () => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteSubject] Success, refetching...');
       await queryClient.invalidateQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
       await queryClient.refetchQueries({ queryKey: [SubjectsService.CACHE_TAGS.Subjects] });
     },

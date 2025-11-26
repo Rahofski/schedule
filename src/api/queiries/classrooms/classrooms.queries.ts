@@ -26,8 +26,9 @@ export const useCreateClassRoom = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: { name: string }) => ClassRoomsService.createClassRoom(dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
+      await queryClient.refetchQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
     },
   });
 };
@@ -36,14 +37,8 @@ export const useCreateClassRoom = () => {
 export const useDeleteClassRoom = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteClassRoom] Deleting classroom:', id);
-      await ClassRoomsService.deleteClassRoom(id);
-    },
+    mutationFn: (id: string) => ClassRoomsService.deleteClassRoom(id),
     onSuccess: async () => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteClassRoom] Success, refetching...');
       await queryClient.invalidateQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
       await queryClient.refetchQueries({ queryKey: [ClassRoomsService.CACHE_TAGS.ClassRooms] });
     },

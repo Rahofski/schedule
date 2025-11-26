@@ -41,7 +41,7 @@ export class TeachersService extends CommonService {
   static async createTeacher<const T extends BaseTeacher>(dto: CreateTeacherDto): Promise<T> {
     return this.proxyFetch<T>(`/users/Teachers`, {
       method: 'POST',
-      headers: { 'Content-Type': 'Baselication/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dto),
     });
   }

@@ -27,8 +27,9 @@ export const useCreateClass = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: { name: string }) => ClassesService.createClass(dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+      await queryClient.refetchQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
     },
   });
 };
@@ -37,14 +38,8 @@ export const useCreateClass = () => {
 export const useDeleteClass = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteClass] Deleting class:', id);
-      await ClassesService.deleteClass(id);
-    },
+    mutationFn: (id: string) => ClassesService.deleteClass(id),
     onSuccess: async () => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteClass] Success, refetching...');
       await queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
       await queryClient.refetchQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
     },
@@ -56,8 +51,9 @@ export const useBulkUpdateClasses = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (classes: AppClass[]) => ClassesService.bulkUpdateClasses(classes),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
+      await queryClient.refetchQueries({ queryKey: [ClassesService.CACHE_TAGS.Classes] });
     },
   });
 };

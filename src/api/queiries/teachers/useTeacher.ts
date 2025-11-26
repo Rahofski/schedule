@@ -12,9 +12,11 @@ export const useCreateTeacher = () => {
       email: string;
       phone: string;
     }) => TeachersService.createTeacher(dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
-      queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
+      await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
+      await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
     },
   });
 };
@@ -23,14 +25,8 @@ export const useCreateTeacher = () => {
 export const useDeleteTeacher = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteTeacher] Deleting teacher:', id);
-      await TeachersService.deleteTeacher(id);
-    },
+    mutationFn: (id: string) => TeachersService.deleteTeacher(id),
     onSuccess: async () => {
-      // eslint-disable-next-line no-console
-      console.log('[useDeleteTeacher] Success, refetching...');
       await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
       await queryClient.invalidateQueries({ queryKey: [TeachersService.CACHE_TAGS.LightTeachers] });
       await queryClient.refetchQueries({ queryKey: [TeachersService.CACHE_TAGS.Teachers] });
