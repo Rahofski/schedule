@@ -36,19 +36,16 @@ async function proxyRequest(request: NextRequest, path: string[], method: string
     // eslint-disable-next-line no-console
     console.log(`[Proxy] ${method} ${endpoint} -> ${url}`);
 
-    // Получаем тело запроса если есть
+    // Получаем тело запроса, если оно есть
     let body: string | undefined;
     if (method !== 'GET' && method !== 'DELETE') {
       try {
         const rawBody = await request.text();
         if (rawBody) {
-          // Конвертируем camelCase -> snake_case
-          const parsedBody = JSON.parse(rawBody);
-          const decamelizedBody = humps.decamelizeKeys(parsedBody);
-          body = JSON.stringify(decamelizedBody);
+          body = rawBody;
 
           // eslint-disable-next-line no-console
-          console.log(`[Proxy] Request body (converted):`, body);
+          console.log(`[Proxy] Request body:`, body);
         }
       } catch (error) {
         // eslint-disable-next-line no-console

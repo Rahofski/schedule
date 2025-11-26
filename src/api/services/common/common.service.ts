@@ -1,5 +1,3 @@
-import humps from 'humps';
-
 export class CommonService {
   static BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '';
   static FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || '';
@@ -118,7 +116,6 @@ export class CommonService {
 
   static formatGetParams<T>(dto: Record<string, T>): string {
     const searchParams = new URLSearchParams();
-    dto = humps.decamelizeKeys(dto) as Record<string, T>;
     Object.entries(dto).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         searchParams.set(key, value.toString());
