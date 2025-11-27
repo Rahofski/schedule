@@ -175,6 +175,7 @@ export function AddLessonDialog({
       participants,
     };
 
+    console.log('[AddLessonDialog] Confirming lesson:', lesson);
     onConfirm(lesson);
     onOpenChange(false);
   };

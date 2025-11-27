@@ -12,9 +12,12 @@ export class ScheduleService extends CommonService {
     // Временно возвращаем моки
     // return Promise.resolve(mockSchedule);
 
-    return this.proxyFetch<ScheduleSlot[]>(`/schedule`, {
+    const result = await this.proxyFetch<ScheduleSlot[]>(`/schedule`, {
       method: 'GET',
     });
+
+    console.log('[ScheduleService] getSchedule result:', result);
+    return result;
   }
 
   // Получить расписание по ID

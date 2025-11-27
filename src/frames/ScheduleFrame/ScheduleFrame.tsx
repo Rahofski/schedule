@@ -44,7 +44,10 @@ export function ScheduleFrame() {
 
   // Синхронизация загруженного расписания с локальным состоянием
   useEffect(() => {
+    console.log('[ScheduleFrame] loadedSchedule:', loadedSchedule);
     if (loadedSchedule && loadedSchedule.length > 0) {
+      console.log('[ScheduleFrame] Setting schedule with', loadedSchedule.length, 'slots');
+      console.log('[ScheduleFrame] First slot:', loadedSchedule[0]);
       setSchedule(loadedSchedule);
     }
   }, [loadedSchedule]);
@@ -61,17 +64,23 @@ export function ScheduleFrame() {
       id: `${dayOfWeek}-${lessonNumber}-${participantsId}-${lesson.subject.id}-${Date.now()}`,
     };
 
-    setSchedule(prev =>
-      prev.map(item => {
+    console.log('[ScheduleFrame] Adding lesson:', newLesson);
+    console.log('[ScheduleFrame] To day:', dayOfWeek, 'lesson:', lessonNumber);
+
+    setSchedule(prev => {
+      const updated = prev.map(item => {
         if (item.dayOfWeek === dayOfWeek && item.lessonNumber === lessonNumber) {
+          console.log('[ScheduleFrame] Found matching slot, adding lesson');
           return {
             ...item,
             lessons: [...item.lessons, newLesson],
           };
         }
         return item;
-      })
-    );
+      });
+      console.log('[ScheduleFrame] Updated schedule:', updated);
+      return updated;
+    });
   };
 
   const removeLesson = (dayOfWeek: WeekDaysCode, lessonNumber: number, lessonIndex: string) => {
