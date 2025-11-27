@@ -53,7 +53,11 @@ export function ScheduleFrame() {
   }, [loadedSchedule]);
 
   const getScheduleItem = (dayOfWeek: WeekDaysCode, lessonNumber: number): ScheduleSlot | undefined => {
-    return schedule.find(item => item.dayOfWeek === dayOfWeek && item.lessonNumber === lessonNumber);
+    const item = schedule.find(item => item.dayOfWeek === dayOfWeek && item.lessonNumber === lessonNumber);
+    if (!item) {
+      console.log('[ScheduleFrame] getScheduleItem: NOT FOUND for', dayOfWeek, lessonNumber);
+    }
+    return item;
   };
 
   const addLesson = (dayOfWeek: WeekDaysCode, lessonNumber: number, lesson: Omit<ScheduleLesson, 'id'>) => {
@@ -66,19 +70,25 @@ export function ScheduleFrame() {
 
     console.log('[ScheduleFrame] Adding lesson:', newLesson);
     console.log('[ScheduleFrame] To day:', dayOfWeek, 'lesson:', lessonNumber);
+    console.log('[ScheduleFrame] Current schedule length:', schedule.length);
 
     setSchedule(prev => {
+      console.log('[ScheduleFrame] prev schedule length:', prev.length);
       const updated = prev.map(item => {
         if (item.dayOfWeek === dayOfWeek && item.lessonNumber === lessonNumber) {
-          console.log('[ScheduleFrame] Found matching slot, adding lesson');
-          return {
+          console.log('[ScheduleFrame] Found matching slot, current lessons:', item.lessons.length);
+          const updatedSlot = {
             ...item,
             lessons: [...item.lessons, newLesson],
           };
+          console.log('[ScheduleFrame] Updated slot lessons:', updatedSlot.lessons.length);
+          return updatedSlot;
         }
         return item;
       });
-      console.log('[ScheduleFrame] Updated schedule:', updated);
+      console.log('[ScheduleFrame] Updated schedule length:', updated.length);
+      const matchingSlot = updated.find(s => s.dayOfWeek === dayOfWeek && s.lessonNumber === lessonNumber);
+      console.log('[ScheduleFrame] Matching slot after update:', matchingSlot);
       return updated;
     });
   };
