@@ -48,7 +48,26 @@ export function ScheduleFrame() {
     if (loadedSchedule && loadedSchedule.length > 0) {
       console.log('[ScheduleFrame] Setting schedule with', loadedSchedule.length, 'slots');
       console.log('[ScheduleFrame] First slot:', loadedSchedule[0]);
-      setSchedule(loadedSchedule);
+      
+      // Создаем полное расписание со всеми слотами
+      const fullSchedule: ScheduleSlot[] = [];
+      Object.entries(WEEK_DAYS_TITLES).forEach(([key, _]) => {
+        LESSON_NUMBERS.forEach(lessonNumber => {
+          // Ищем данные для этого слота в загруженном расписании
+          const loadedSlot = loadedSchedule.find(
+            slot => slot.dayOfWeek === key && slot.lessonNumber === lessonNumber
+          );
+          
+          fullSchedule.push({
+            dayOfWeek: key as WeekDaysCode,
+            lessonNumber,
+            lessons: loadedSlot?.lessons || [],
+          });
+        });
+      });
+      
+      console.log('[ScheduleFrame] Full schedule created with', fullSchedule.length, 'slots');
+      setSchedule(fullSchedule);
     }
   }, [loadedSchedule]);
 
