@@ -113,7 +113,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           <div className='mt-4 rounded-lg border bg-muted/50 p-3 text-center text-xs text-muted-foreground'>
             <p className='font-medium'>Демо-доступ:</p>
             <p className='mt-1'>
-              <span className='font-mono'>mock@gmail.com</span> / <span className='font-mono'>mock123</span>
+              <span className='font-mono'>bob@gmail.com</span> / <span className='font-mono'>1111</span>
             </p>
           </div>
         </CardContent>
